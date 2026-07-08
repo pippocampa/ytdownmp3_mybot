@@ -36,13 +36,8 @@ async def download_audio(update: Update, context: ContextTypes.DEFAULT_TYPE):
             'preferredquality': '192',
         }],
         'quiet': True,
-        # ISTRUZIONE PER USARE I COOKIE CARICATI
+        # Teniamo SOLO i cookie puliti in formato Netscape
         'cookiefile': 'cookies.txt',
-        'extractor_args': {
-            'youtube': {
-                'player_client': ['android', 'ios'],
-            }
-        }
     }
 
     try:
