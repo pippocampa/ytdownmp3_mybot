@@ -6,11 +6,10 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 import yt_dlp
 
 # Inserisci il tuo token qui
-TOKEN = "8973453717:AAFFTz9LqQvT5hLXiIj9UaD5dWWKyM9Oi3E"
+TOKEN = "8973453717:AAFT9uk3svxCFoypKqXzLlNiE6JSJPOIbTM"
 
 # Finto server web per ingannare Render e tenerlo attivo
 def run_dummy_server():
-    # Render assegna automaticamente una porta tramite la variabile d'ambiente PORT
     port = int(os.environ.get("PORT", 10000))
     server_address = ('0.0.0.0', port)
     httpd = HTTPServer(server_address, SimpleHTTPRequestHandler)
@@ -37,6 +36,8 @@ async def download_audio(update: Update, context: ContextTypes.DEFAULT_TYPE):
             'preferredquality': '192',
         }],
         'quiet': True,
+        # ISTRUZIONE PER USARE I COOKIE CARICATI
+        'cookiefile': 'cookies.txt',
         'extractor_args': {
             'youtube': {
                 'player_client': ['android', 'ios'],
