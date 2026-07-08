@@ -1,9 +1,21 @@
 import os
+import threading
+from http.server import SimpleHTTPRequestHandler, HTTPServer
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 import yt_dlp
 
-TOKEN = "8973453717:AAFT9uk3svxCFoypKqXzLlNiE6JSJPOIbTM"
+# Inserisci il tuo token qui
+TOKEN = "8973453717:AAFFTz9LqQvT5hLXiIj9UaD5dWWKyM9Oi3E"
+
+# Finto server web per ingannare Render e tenerlo attivo
+def run_dummy_server():
+    # Render assegna automaticamente una porta tramite la variabile d'ambiente PORT
+    port = int(os.environ.get("PORT", 10000))
+    server_address = ('0.0.0.0', port)
+    httpd = HTTPServer(server_address, SimpleHTTPRequestHandler)
+    print(f"Finto server web attivo sulla porta {port}...")
+    httpd.serve_forever()
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Ciao! Inviami un link di YouTube e lo convertirò in MP3. 🎵")
@@ -25,7 +37,6 @@ async def download_audio(update: Update, context: ContextTypes.DEFAULT_TYPE):
             'preferredquality': '192',
         }],
         'quiet': True,
-        # AGGIUNGIAMO QUESTO BLOCCO PER AGGIRARE IL BLOCCO 429
         'extractor_args': {
             'youtube': {
                 'player_client': ['android', 'ios'],
@@ -51,6 +62,10 @@ def main():
     if not os.path.exists('downloads'):
         os.makedirs('downloads')
 
+    # Avvia il server web finto in un thread separato
+    threading.Thread(target=run_dummy_server, daemon=True).start()
+
+    # Avvia il bot Telegram
     application = Application.builder().token(TOKEN).build()
     application.add_handler(CommandHandler("start", start))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, download_audio))
