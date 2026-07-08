@@ -25,6 +25,12 @@ async def download_audio(update: Update, context: ContextTypes.DEFAULT_TYPE):
             'preferredquality': '192',
         }],
         'quiet': True,
+        # AGGIUNGIAMO QUESTO BLOCCO PER AGGIRARE IL BLOCCO 429
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android', 'ios'],
+            }
+        }
     }
 
     try:
